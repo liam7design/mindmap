@@ -1,11 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import Ball from './Ball';
-import { Button, Box, Typography, Tabs, Tab, TextField, useTheme } from '@mui/material';
-import RefreshIcon from '@mui/icons-material/Refresh';
-import NumbersIcon from '@mui/icons-material/Numbers';
-import PersonIcon from '@mui/icons-material/Person';
-import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
+import { Box, Typography, Tabs, Tab, TextField, useTheme } from '@mui/material';
 import { getLuckyNumbersFromSaju } from '../../utils/lotto/sajuUtils';
+import { FloatingBox, FloatingButton } from '../ui/FloatingBox';
 
 function generateLottoSet(excludeNumbers = []) {
   const fullPool = Array(45).fill().map((_, i) => i + 1);
@@ -110,14 +107,14 @@ function RecommendNumber() {
     switch (mode) {
       case 1:
         return (
-          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, mb: 2, width: '100%', maxWidth: 400 }}>
+          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, mb: 2, width: '100%' }}>
             <TextField label="이름" variant="outlined" size="small" value={userInfo.name} onChange={e => setUserInfo({...userInfo, name: e.target.value})} fullWidth />
             <TextField label="생년월일 (YYYYMMDD)" variant="outlined" size="small" value={userInfo.dob} onChange={e => setUserInfo({...userInfo, dob: e.target.value})} fullWidth />
           </Box>
         );
       case 2:
         return (
-          <Box sx={{ mb: 2, width: '100%', maxWidth: 400 }}>
+          <Box sx={{ mb: 2, width: '100%' }}>
             <TextField fullWidth label="포함할 번호 (쉼표로 구분)" variant="outlined" size="small" value={fixedNumbersInput} onChange={e => setFixedNumbersInput(e.target.value)} placeholder="예: 7, 15, 23" />
           </Box>
         );
@@ -127,14 +124,24 @@ function RecommendNumber() {
   };
 
   return (
-    <Box sx={{ textAlign: 'center', width: '100%' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 4 }}>
-        <Tabs value={mode} onChange={handleTabChange} centered indicatorColor="primary" textColor="primary">
-          <Tab icon={<NumbersIcon />} iconPosition="start" label="기본 추천" />
-          <Tab icon={<PersonIcon />} iconPosition="start" label="사주 추천" />
-          <Tab icon={<PlaylistAddCheckIcon />} iconPosition="start" label="번호 포함" />
+    <>
+      <Box sx={{ 
+        position: 'fixed',
+        top: '57px',
+        left: 0,
+        right: 0,
+        borderBottom: 1, 
+        borderColor: 'divider',
+        backgroundColor: '#fff',
+        zIndex: 1
+      }}>
+        <Tabs value={mode} onChange={handleTabChange} centered indicatorColor="primary" textColor="primary" variant="fullWidth">
+          <Tab label="기본 추천" />
+          <Tab label="사주 추천" />
+          <Tab label="번호 포함" />
         </Tabs>
       </Box>
+      <Box sx={{ height: '72px' }} />
 
       {renderInputs()}
 
@@ -148,18 +155,11 @@ function RecommendNumber() {
         </Typography>
       )}
 
-      <Button variant="contained" color="primary" size="large" startIcon={<RefreshIcon />} onClick={handleGenerate} sx={{ mb: 4, px: 4, py: 1.5 }}>
-        새 번호 생성
-      </Button>
-
       {lottoSets.length > 0 && (
-        <Box sx={{ p: { xs: 2, sm: 3 }, backgroundColor: theme.palette.background.default, borderRadius: 2, boxShadow: 'inset 0 2px 5px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           {lottoSets.map((set, setIndex) => (
-            <Box key={setIndex} sx={{ py: 1.5, px: 1, backgroundColor: theme.palette.background.paper, borderRadius: 2, boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <Typography variant="body1" sx={{ mb: 1.5, fontWeight: 'bold', color: theme.palette.primary.dark }}>
-                세트 {setIndex + 1}
-              </Typography>
-              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: { xs: 0.8, sm: 1.5 } }}>
+            <Box key={setIndex} sx={{ py: 1.5, px: 1, border: '1px solid #dbdbdb', borderRadius: 1.5, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1 }}>
                 {set.map((num, numIndex) => (
                   <Ball key={`${setIndex}-${numIndex}-${num}`} num={num} />
                 ))}
@@ -168,7 +168,12 @@ function RecommendNumber() {
           ))}
         </Box>
       )}
-    </Box>
+      
+      <FloatingBox>
+        <FloatingButton variant="contained" label="행운의 로또 번호 생성" onClick={handleGenerate} />
+      </FloatingBox>
+
+    </>
   );
 }
 
