@@ -36,7 +36,7 @@ function RecommendNumber() {
   const [lottoSets, setLottoSets] = useState([]);
   const [mode, setMode] = useState(0);
   const [userInfo, setUserInfo] = useState({ name: '', dob: '' });
-  const [fixedNumbersInput, setFixedNumbersInput] = useState('');
+  const [fixedNumbersInput, setFixedNumbersInput] = useState(''); //eslint-disable-line no-unused-vars
   const [fixedNumbers, setFixedNumbers] = useState(['', '', '', '', '']); // 5개의 입력박스를 위한 상태
   const [error, setError] = useState('');
   const [sajuInfo, setSajuInfo] = useState('');

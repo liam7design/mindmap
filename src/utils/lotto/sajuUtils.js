@@ -64,7 +64,7 @@ export function getLuckyNumbersFromSaju(dob, today = null) {
     const todayDay = parseInt(today.substring(6, 8), 10);
     
     const todayLunarInfo = korLunar.toLunar(todayYear, todayMonth, todayDay);
-    const { secha: todaySecha, wolgeon: todayWolgeon, iljin: todayIljin, isLeapMonth: todayIsLeapMonth } = todayLunarInfo;
+    const { secha: todaySecha, wolgeon: todayWolgeon, iljin: todayIljin, isLeapMonth: todayIsLeapMonth } = todayLunarInfo; //eslint-disable-line no-unused-vars
     
     if (!todaySecha || !todayIljin) {
         throw new Error('오늘 날짜의 사주 정보를 계산할 수 없습니다.');
