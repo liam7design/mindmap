@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import Ball from './Ball';
-import { Box, Typography, Tabs, Tab, TextField, useTheme, IconButton, Tooltip } from '@mui/material';
+import { Box, Typography, Tabs, Tab, TextField, useTheme, IconButton, Tooltip, Button } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { getLuckyNumbersFromSaju } from '../../utils/lotto/sajuUtils';
 import { FloatingBox, FloatingButton } from '../ui/FloatingBox';
 
@@ -39,10 +40,26 @@ function RecommendNumber() {
   const [fixedNumbers, setFixedNumbers] = useState(['', '', '', '', '']); // 5개의 입력박스를 위한 상태
   const [error, setError] = useState('');
   const [sajuInfo, setSajuInfo] = useState('');
+  const [welcomeMessage, setWelcomeMessage] = useState('');
   const theme = useTheme();
 
+  // 환영 메시지 배열
+  const welcomeMessages = [
+    "복잡한 고민 없이, 단 한 번의 클릭으로 나만의 행운의 로또번호를 쉽고 빠르게 만들어보세요! 당첨의 기회를 지금 바로 경험해보세요.",
+    "운명의 숫자가 당신을 기다리고 있습니다! 행운의 로또번호 생성 버튼을 눌러보세요. 오늘은 당신의 날이 될지도 모릅니다!",
+    "꿈꾸던 당첨이 현실이 될 수 있습니다! 지금 바로 행운의 로또번호를 생성해보세요. 기적은 준비된 사람에게 찾아옵니다!",
+    "복권의 신이 당신을 부르고 있습니다! 행운의 로또번호 생성 버튼을 클릭하면, 당신만의 특별한 번호가 나타날 것입니다!",
+    "오늘 하루, 행운이 당신과 함께하기를 바랍니다! 로또번호 생성 버튼을 눌러보세요. 기적은 믿는 자에게 찾아옵니다!",
+    "당신의 행운을 깨워보세요! 한 번의 클릭으로 나만의 특별한 로또번호를 만들어보세요. 오늘은 다른 하루가 될 것입니다!",
+    "꿈꾸던 부자가 될 기회가 여기 있습니다! 행운의 로또번호를 생성해보세요. 기적은 준비된 사람에게 찾아옵니다!",
+    "복권의 여신이 당신을 기다리고 있습니다! 지금 바로 행운의 로또번호를 생성해보세요. 오늘은 당신의 특별한 날이 될 것입니다!"
+  ];
+
   useEffect(() => {
-    handleGenerate();
+    // 초기 환영 메시지 설정
+    const randomMessage = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+    setWelcomeMessage(randomMessage);
+    // 초기 로드 시에는 번호 생성하지 않고 환영 메시지만 표시
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -54,6 +71,12 @@ function RecommendNumber() {
     setUserInfo({ name: '', dob: '' });
     setFixedNumbersInput('');
     setFixedNumbers(['', '', '', '', '']); // 입력박스 초기화
+    
+    // 기본 추천 탭으로 돌아올 때 새로운 환영 메시지 설정
+    if (newValue === 0) {
+      const randomMessage = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+      setWelcomeMessage(randomMessage);
+    }
   };
 
   // 입력박스 값 변경 핸들러
@@ -126,6 +149,7 @@ function RecommendNumber() {
   const handleGenerate = useCallback(() => {
     setError('');
     setSajuInfo('');
+    setWelcomeMessage(''); // 번호 생성 시 환영 메시지 숨김
     let newSets = [];
 
     try {
@@ -317,6 +341,86 @@ function RecommendNumber() {
         <Typography variant="body2" sx={{ mb: 2, p: 1.5, backgroundColor: theme.palette.background.default, color: theme.palette.primary.dark, borderRadius: 1.5 }}>
             {sajuInfo}
         </Typography>
+      )}
+
+      {welcomeMessage && mode === 0 && lottoSets.length === 0 && (
+        <Box sx={{ 
+          mb: 3, 
+          p: 2.5, 
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          borderRadius: 2,
+          textAlign: 'center',
+          boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          <Box sx={{
+            position: 'absolute',
+            top: -10,
+            right: -10,
+            width: 60,
+            height: 60,
+            background: 'rgba(255,255,255,0.1)',
+            borderRadius: '50%',
+            animation: 'pulse 2s infinite'
+          }} />
+          <Box sx={{
+            position: 'absolute',
+            bottom: -15,
+            left: -15,
+            width: 40,
+            height: 40,
+            background: 'rgba(255,255,255,0.08)',
+            borderRadius: '50%',
+            animation: 'pulse 2s infinite',
+            animationDelay: '1s'
+          }} />
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1 }}>
+            <AutoAwesomeIcon sx={{ color: 'white', mr: 1, fontSize: '1.5rem' }} />
+          </Box>
+          <Typography 
+            variant="body1" 
+            sx={{ 
+              color: 'white', 
+              fontWeight: 500,
+              lineHeight: 1.6,
+              position: 'relative',
+              zIndex: 1,
+              mb: 2
+            }}
+          >
+            {welcomeMessage}
+          </Typography>
+          <Button
+            variant="contained"
+            onClick={handleGenerate}
+            sx={{
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              color: 'white',
+              border: '2px solid rgba(255,255,255,0.3)',
+              '&:hover': {
+                backgroundColor: 'rgba(255,255,255,0.3)',
+                border: '2px solid rgba(255,255,255,0.5)',
+              },
+              fontWeight: 'bold',
+              px: 3,
+              py: 1
+            }}
+          >
+            🎯 지금 시작하기
+          </Button>
+          <Typography 
+            variant="caption" 
+            sx={{ 
+              color: 'rgba(255,255,255,0.8)', 
+              display: 'block', 
+              mt: 1,
+              fontSize: '0.75rem'
+            }}
+          >
+            버튼을 클릭하면 나만의 특별한 로또번호가 생성됩니다!
+          </Typography>
+        </Box>
       )}
 
       {lottoSets.length > 0 && (
