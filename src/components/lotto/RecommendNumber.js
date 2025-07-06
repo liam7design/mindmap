@@ -137,11 +137,17 @@ function RecommendNumber() {
           throw new Error('이름과 생년월일을 모두 입력해주세요.');
         }
 
+        // 생년월일 형식 검증
+        const dobPattern = /^\d{8}$/;
+        if (!dobPattern.test(userInfo.dob)) {
+          throw new Error('생년월일은 8자리 숫자(YYYYMMDD)로 입력해주세요.');
+        }
+
         const { luckyNumbers, message } = getLuckyNumbersFromSaju(userInfo.dob);
         setSajuInfo(message);
 
         if (luckyNumbers.length === 0) {
-          throw new Error('사주 분석에 실패했습니다. 생년월일을 다시 확인해주세요.');
+          throw new Error(message || '사주 분석에 실패했습니다. 생년월일을 다시 확인해주세요.');
         }
 
         newSets = Array(5).fill(null).map(() => {
@@ -180,9 +186,28 @@ function RecommendNumber() {
     switch (mode) {
       case 1:
         return (
-          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, mb: 2, width: '100%' }}>
-            <TextField label="이름" variant="outlined" size="small" value={userInfo.name} onChange={e => setUserInfo({...userInfo, name: e.target.value})} fullWidth />
-            <TextField label="생년월일 (YYYYMMDD)" variant="outlined" size="small" value={userInfo.dob} onChange={e => setUserInfo({...userInfo, dob: e.target.value})} fullWidth />
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 2, width: '100%' }}>
+            <TextField 
+              label="이름" 
+              variant="outlined" 
+              size="small" 
+              value={userInfo.name} 
+              onChange={e => setUserInfo({...userInfo, name: e.target.value})} 
+              fullWidth 
+            />
+            <TextField 
+              label="생년월일 (YYYYMMDD)" 
+              variant="outlined" 
+              size="small" 
+              value={userInfo.dob} 
+              onChange={e => setUserInfo({...userInfo, dob: e.target.value})} 
+              placeholder="예: 19900101"
+              helperText="8자리 숫자로 입력해주세요 (예: 19900101)"
+              fullWidth 
+            />
+            <Typography variant="caption" sx={{ color: 'text.secondary', mt: 1 }}>
+              💡 오늘 날짜의 기운도 함께 반영됩니다
+            </Typography>
           </Box>
         );
       case 2:
